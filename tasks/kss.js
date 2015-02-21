@@ -34,8 +34,11 @@ module.exports = function (grunt) {
     kssCmd.push(realPath + 'node_modules/kss/bin/kss-node');
 
     this.files.forEach(function (file) {
-      kssCmd.push("'" + file.src[0] + "'");
-      kssCmd.push("'" + file.dest + "'");
+      file.src.forEach(function (src) {
+        kssCmd.push('--source', "\"" + src + "\"");
+      });
+	
+      kssCmd.push('--destination', "\"" + file.dest + "\"");
       dest = file.dest;
     });
 
@@ -52,7 +55,14 @@ module.exports = function (grunt) {
       kssCmd.push('--custom', opts.custom);
     }
     if (opts.css !== null) {
-      kssCmd.push('--css', opts.css);
+      if(Array.isArray(opts.css)) {
+        opts.css.forEach(function(css){
+          kssCmd.push('--css', css);
+        });
+      }
+      else {
+        kssCmd.push('--css', opts.css);
+      }
     }
     if (opts.js !== null) {
       kssCmd.push('--js', opts.js);
